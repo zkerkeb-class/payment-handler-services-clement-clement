@@ -5,10 +5,6 @@
 -   Clément DUFOUR-LAMARTINIE
 -   Clément WALSH DE SERRANT
 
-## Project demo
-
-https://youtu.be/VFPAe-dkryc
-
 ## Installation and configuration
 
 Run `npm install`
