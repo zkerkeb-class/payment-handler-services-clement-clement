@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
-
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
@@ -14,7 +14,7 @@ if (!jwtSecret) {
   process.exit(1);
 }
 
-// Ajoutez cette ligne
+app.use(cors());
 app.use(express.json());
 
 app.post('/pay', async (req, res) => {
