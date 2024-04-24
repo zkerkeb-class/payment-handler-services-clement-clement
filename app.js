@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import cors from 'cors';
+import axios from 'axios';
 dotenv.config();
 
 const app = express();
@@ -18,7 +19,16 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/pay', async (req, res) => {
-  const {amount, token} = req.body;
+  const {
+    amount,
+    token,
+    email,
+    price,
+    billingAddress,
+    firstName,
+    lastName,
+    description,
+  } = req.body;
   console.log(token);
   try {
     const charge = await stripe.charges.create({
@@ -27,6 +37,17 @@ app.post('/pay', async (req, res) => {
       description: 'Description de la charge',
       source: token,
     });
+    const emailResponse = await axios.post(
+      'http://localhost:3004/api/sendFactureEmail',
+      {
+        email: email,
+        price: price,
+        billingAddress: billingAddress,
+        firstName: firstName,
+        lastName: lastName,
+        description: description,
+      },
+    );
 
     res.status(200).send({success: charge});
   } catch (error) {
@@ -38,10 +59,3 @@ app.post('/pay', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
-
-// Exemple de body pour requête POST avec Postman
-
-// {
-//   "token": "tok_visa",
-//   "amount": 2000
-// }
