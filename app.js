@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import cors from 'cors';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
+
 dotenv.config();
 
 const app = express();
@@ -29,8 +31,19 @@ app.post('/pay', async (req, res) => {
     lastName,
     description,
   } = req.body;
-  console.log(token);
+
+  const authHeader = req.headers.authorization;
+  const authToken = authHeader && authHeader.split(' ')[1];
+  if (!authToken) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
   try {
+    const { email: userEmail } = jwt.verify(authToken, jwtSecret);
+
+    if (userEmail !== email) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
     const charge = await stripe.charges.create({
       amount,
       currency: 'eur',
