@@ -7,8 +7,6 @@ export const processPayment = async (req, res) => {
   const jwtSecret = process.env.JWT_SECRET;
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  console.log(process.env.JWT_SECRET);
-
   if (!jwtSecret) {
     console.error("La clé secrète JWT n'est pas définie dans le fichier .env");
     process.exit(1);
